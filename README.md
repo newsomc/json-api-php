@@ -1,4 +1,4 @@
-https://travis-ci.org/newsomc/json-api-php.svg
+[![Build Status](https://travis-ci.org/newsomc/json-api-php.svg)](https://travis-ci.org/newsomc/json-api-php)
 
 JSON API PHP
 ===

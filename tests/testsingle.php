@@ -43,33 +43,12 @@ function test_dumps() {
         array("posts" => array("id" => 1, "title" => "A title"))));
 }
 
-function dump_object() {
-    $post = array(
-        'id'=> 1,
-        'title'=> 'My post',
-        'comments' => array(
-            array('id'=> 1, 'content'=> 'A comment'),
-            array('id'=> 2, 'content' =>'Another comment')));
-    
-    $pr = new PostResponder;
-
-    $json = $pr->dumps(array(
-        'instances' => $post,
-        'linked' => array(
-            'comments' => $post['comments']
-        )));
-
-    var_dump($json);
-}
-
-
 // Run tests
 function run() {
     test_single_object();
     test_multiple_objects();
     test_meta();
     test_dumps();
-    dump_object();
 }
 
 run();

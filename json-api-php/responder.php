@@ -4,21 +4,30 @@ require_once('Inflector.php');
 
 class Responder {
 
-    function __construct($type, $encoder = NULL) {
+    function __construct($type, $encoder = 'json_encode') {
 
         if (!$type) {
             throw new Exception('Type must be set.');
         }
 
-        $this->encoder = isset($encoder) ? $encoder : 'json_encode';
-        $this->type = $type;
-        $this->links = array();
-        $this->root = $this->pluralizedType();
+        $this->encoder = $encoder;
+        $this->type    = $type;
+        $this->links   = array();
+        $this->root    = $this->pluralizedType();
     }
 
-    private function adapter($obj) {
+    /**
+     * Applies the speicified encoder to an object.
+     *
+     * @param array $assoc A php associative array.
+     *
+     * @return mixed[]
+     *
+     */
+
+    private function adapter($assoc) {
         $func = $this->encoder;
-        return $func($obj);
+        return $func($assoc);
     }
 
     private function buildMeta($meta) {
@@ -46,7 +55,7 @@ class Responder {
         return $rv;
     }
 
-    private function buildLinked($linked) {
+    private function buildLinked(array $linked) {
         $rv = array();
 
         foreach($linked as $key => $instances) {
@@ -58,11 +67,7 @@ class Responder {
         return $rv;
     }
 
-    private function buildResources($instances, $links = NULL) {
-        return $this->buildResource($instances, $links);
-    }
-
-    private function buildResource($instance, $links = NULL) {
+    private function buildResources($instance, $links = NULL) {
         $resource = $instance;
         if($links != NULL) {
             $resource['links'] = $this->buildResourceLinks($instance, $links);
@@ -87,12 +92,31 @@ class Responder {
         return $resourceLinks;
     }
 
+    /**
+     * Public interface to `get()`
+     *
+     * @todo investigate a better way of  
+     * args/destructuring in PHP.
+     *      
+     * @param mixed[] $args Array 
+     *
+     * keys include:
+     *  - instnaces (mandatory)
+     *  - meta 
+     *  - links
+     *  - linked
+     * 
+     * @return $data [] 
+     *
+     */
     public function build(array $args) {
-        return $this->get($args);
+        $data = $this->get($args);
+        return $data;
     }
 
     public function dumps(array $args) {
-        return $this->respond($args);
+        $formatted_data = $this->respond($args);
+        return $formatted_data;
     }
 
     public function respond(array $args) {
@@ -100,12 +124,17 @@ class Responder {
         return $this->adapter($document);
     }
 
-    public function get(&$args) {
+    private function get($args) {
+
+        if (!$args['instances']) {
+            throw new Exception('Instances key must be set.');
+        }
+
         $instances = $args['instances'];
         $meta      = $args['meta'];
         $links     = $args['links'];
         $linked    = $args['linked'];
-        $root = $this->root;
+        $root      = $this->root;
 
         if (!is_array($instances)) {
             $instances = array($instances);

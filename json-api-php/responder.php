@@ -3,20 +3,23 @@ require_once('Inflector.php');
 
 class Responder {
 
+    // i don't think any of these should be static, you just use them as member vars
     static $encoder;
     static $root;
-    static $LINKS = array();
+    
+    // why the all caps?
+    static $LINKS = array(); // i don't see where you ever set this but it is used often
     static $TYPE;
 
-    function __construct($type, $encoder = NULL) {
+    function __construct($type, $encoder = 'json_encode') {
 
-        if (!$type){
+        if (!$type) {
             throw new Exception('Type must be set.');
         }
 
-        $this->encoder = isset($encoder) ? $encoder : 'json_encode';
+        $this->encoder = $encoder;
         $this->TYPE = $type;
-        $this->root = $this->pluralizedType();
+        $this->root = $this->pluralizedType();  // i would send $this->type in as the argument
     }
 
     private function adapter($obj) {
@@ -25,14 +28,16 @@ class Responder {
     }
 
     private function buildMeta($meta) {
+        ?  action is build but just return $meta?
         return $meta;
     }
 
-    private function buildLinks($links) {
+    private function buildLinks(array $links) {
         $rv = array();
         $properties = array();
 
         foreach($links as $link) {
+            // you never seem to set $this->LINKS with values so i would check that those keys are set
             $properties = $this->LINKS[$link];
             $key = sprintf("%s.%s", $this->pluralizedType(), $link);
             $value = array(
@@ -49,7 +54,7 @@ class Responder {
         return $rv;
     }
 
-    private function buildLinked($linked) {
+    private function buildLinked(array $linked) {
         $rv = array();
 
         foreach($linked as $key => $instances) {
@@ -62,6 +67,8 @@ class Responder {
     }
 
     private function buildResources($instances, $links = NULL) {
+        // huh?  this seems weird, do you want to 
+        // foreach ($instances as $instance) { }  // but not sure what your return is
         return $this->buildResource($instances, $links);
     }
 
@@ -73,7 +80,7 @@ class Responder {
         return $resource;
     }
 
-    private function buildResourceLinks($instance, $links) {
+    private function buildResourceLinks($instance, array $links) {
         $resourceLinks = array();
 
         foreach($links as $link) { 
@@ -90,7 +97,9 @@ class Responder {
         return $resourceLinks;
     }
 
+
     public function build(array $args) {
+        // seems like mixing behavior.  build calls get?  seems like build performs and action but get should return data
         return $this->get($args);
     }
 
@@ -103,7 +112,9 @@ class Responder {
         return $this->adapter($document);
     }
 
-    public function get(&$args) {
+    // get seems to do a lot more than just getting data, i would maybe separate out this action into set and get
+    public function get($args) {
+        // this seems like trouble if thise arg keys are not set.  
         $instances = $args['instances'];
         $meta      = $args['meta'];
         $links     = $args['links'];
@@ -115,11 +126,13 @@ class Responder {
         }
 
         if ($linked != NULL) {
+            // $links vs $linked is confusing
             $links = array_keys($linked);
         }
 
         $document = array();
-
+        
+        // this section is confusing since you deal with $linked/$links above, maybe tigthen this logic
         if ($meta != NULL) {
             $document['meta'] = $this->buildMeta($meta);
         }
@@ -138,7 +151,7 @@ class Responder {
     }
 
     public function pluralizedType() {
-        return Inflector::pluralize($this->TYPE);
+        return Inflector::pluralize($this->TYPE);  // make this a function argument?
     }
 
 }

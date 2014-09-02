@@ -1,3 +1,5 @@
+https://travis-ci.org/newsomc/json-api-php.svg
+
 JSON API PHP
 ===
 JSON-API responses in PHP.

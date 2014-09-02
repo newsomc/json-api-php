@@ -1,4 +1,4 @@
-Hyp
+JSON API PHP
 ===
 JSON-API responses in PHP.
 

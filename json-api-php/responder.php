@@ -3,11 +3,12 @@ require_once('Inflector.php');
 
 class Responder {
 
+    // i don't think any of these should be static, you just use them as member vars
     static $encoder;
     static $root;
     
     // why the all caps?
-    static $LINKS = array();
+    static $LINKS = array(); // i don't see where you ever set this but it is used often
     static $TYPE;
 
     function __construct($type, $encoder = 'json_encode') {
@@ -18,7 +19,7 @@ class Responder {
 
         $this->encoder = $encoder;
         $this->TYPE = $type;
-        $this->root = $this->pluralizedType();  // i would sent $this->type in as the argument
+        $this->root = $this->pluralizedType();  // i would send $this->type in as the argument
     }
 
     private function adapter($obj) {
@@ -27,14 +28,16 @@ class Responder {
     }
 
     private function buildMeta($meta) {
+        ?  action is build but just return $meta?
         return $meta;
     }
 
-    private function buildLinks($links) {
+    private function buildLinks(array $links) {
         $rv = array();
         $properties = array();
 
         foreach($links as $link) {
+            // you never seem to set $this->LINKS with values so i would check that those keys are set
             $properties = $this->LINKS[$link];
             $key = sprintf("%s.%s", $this->pluralizedType(), $link);
             $value = array(
@@ -51,7 +54,7 @@ class Responder {
         return $rv;
     }
 
-    private function buildLinked($linked) {
+    private function buildLinked(array $linked) {
         $rv = array();
 
         foreach($linked as $key => $instances) {
@@ -77,7 +80,7 @@ class Responder {
         return $resource;
     }
 
-    private function buildResourceLinks($instance, $links) {
+    private function buildResourceLinks($instance, array $links) {
         $resourceLinks = array();
 
         foreach($links as $link) { 

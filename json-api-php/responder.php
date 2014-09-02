@@ -8,13 +8,13 @@ class Responder {
     static $LINKS = array();
     static $TYPE;
 
-    function __construct($type, $encoder = NULL) {
+    function __construct($type, $encoder = 'json_encode') {
 
-        if (!$type){
+        if (!$type) {
             throw new Exception('Type must be set.');
         }
 
-        $this->encoder = isset($encoder) ? $encoder : 'json_encode';
+        $this->encoder = $encoder;
         $this->TYPE = $type;
         $this->root = $this->pluralizedType();
     }
@@ -103,7 +103,7 @@ class Responder {
         return $this->adapter($document);
     }
 
-    public function get(&$args) {
+    public function get($args) {
         $instances = $args['instances'];
         $meta      = $args['meta'];
         $links     = $args['links'];

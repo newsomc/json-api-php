@@ -25,7 +25,7 @@ class Responder {
         return $meta;
     }
 
-    private function buildLinks($links) {
+    private function buildLinks(array $links) {
         $rv = array();
         $properties = array();
 
@@ -33,7 +33,7 @@ class Responder {
             $properties = $this->links[$link];
             $key = sprintf("%s.%s", $this->pluralizedType(), $link);
             $value = array(
-                "type" => $properties['responder']->pluralizedType();
+                "type" => $properties['responder']->pluralizedType()
             );
 
             if(array_key_exists("href", $properties)) {

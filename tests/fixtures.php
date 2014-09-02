@@ -22,7 +22,7 @@ class PostResponder extends Responder {
     public function __construct() {
         $this->id = 1;
         $this->title = 'Test';
-        $this->LINKS = array(
+        $this->links = array(
             'comments' => array(
                 'responder' => new CommentResponder,
                 'href'      => 'http://example.com/comments/{posts.comments}'

@@ -4,6 +4,8 @@ require_once('Inflector.php');
 
 class Responder {
 
+    static $links = array();
+
     function __construct($type, $encoder = 'json_encode') {
 
         if (!$type) {
@@ -12,7 +14,6 @@ class Responder {
 
         $this->encoder = $encoder;
         $this->type    = $type;
-        $this->links   = array();
         $this->root    = $this->pluralizedType();
     }
 
@@ -39,10 +40,11 @@ class Responder {
         $properties = array();
 
         foreach($links as $link) {
+
             $properties = $this->links[$link];
             $key = sprintf("%s.%s", $this->pluralizedType(), $link);
             $value = array(
-                "type" => $properties['responder']->pluralizedType()
+                "type" => $properties['responder']->root
             );
 
             if(array_key_exists("href", $properties)) {

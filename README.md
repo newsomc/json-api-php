@@ -29,3 +29,46 @@ Example
         'linked' => array('comments'=> $post['comments'])
     ));
 ```
+
+This code creates a JSON API formatted response for use in your
+application
+
+```json
+{
+    "links": {
+        "posts.comments": {
+            "type": "comments",
+            "href": "http://example.com/comments/{posts.comments}"
+        }
+    },
+    "linked": {
+        "comments": [
+            {
+                "id": 1,
+                "content": "A comment"
+            },
+            {
+                "id": 2,
+                "content": "Another comment"
+            }
+        ]
+    },
+    "posts": {
+        "id": 1,
+        "title": "My post",
+        "comments": [
+            {
+                "id": 1,
+                "content": "A comment"
+            },
+            {
+                "id": 2,
+                "content": "Another comment"
+            }
+        ],
+        "links": {
+            "comments": [1,2]
+        }
+    }
+}
+```

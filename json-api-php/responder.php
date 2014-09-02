@@ -5,6 +5,8 @@ class Responder {
 
     static $encoder;
     static $root;
+    
+    // why the all caps?
     static $LINKS = array();
     static $TYPE;
 
@@ -16,7 +18,7 @@ class Responder {
 
         $this->encoder = $encoder;
         $this->TYPE = $type;
-        $this->root = $this->pluralizedType();
+        $this->root = $this->pluralizedType();  // i would sent $this->type in as the argument
     }
 
     private function adapter($obj) {
@@ -62,6 +64,8 @@ class Responder {
     }
 
     private function buildResources($instances, $links = NULL) {
+        // huh?  this seems weird, do you want to 
+        // foreach ($instances as $instance) { }  // but not sure what your return is
         return $this->buildResource($instances, $links);
     }
 
@@ -90,7 +94,9 @@ class Responder {
         return $resourceLinks;
     }
 
+
     public function build(array $args) {
+        // seems like mixing behavior.  build calls get?  seems like build performs and action but get should return data
         return $this->get($args);
     }
 
@@ -103,7 +109,9 @@ class Responder {
         return $this->adapter($document);
     }
 
+    // get seems to do a lot more than just getting data, i would maybe separate out this action into set and get
     public function get($args) {
+        // this seems like trouble if thise arg keys are not set.  
         $instances = $args['instances'];
         $meta      = $args['meta'];
         $links     = $args['links'];
@@ -115,11 +123,13 @@ class Responder {
         }
 
         if ($linked != NULL) {
+            // $links vs $linked is confusing
             $links = array_keys($linked);
         }
 
         $document = array();
-
+        
+        // this section is confusing since you deal with $linked/$links above, maybe tigthen this logic
         if ($meta != NULL) {
             $document['meta'] = $this->buildMeta($meta);
         }
@@ -138,7 +148,7 @@ class Responder {
     }
 
     public function pluralizedType() {
-        return Inflector::pluralize($this->TYPE);
+        return Inflector::pluralize($this->TYPE);  // make this a function argument?
     }
 
 }

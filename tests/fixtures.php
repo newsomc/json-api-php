@@ -1,6 +1,6 @@
 <?php
 
-require_once('/../json-api-php/responder.php');
+require_once(__DIR__.'/../json-api-php/responder.php');
 
 class CommentResponder extends Responder {
     public function __construct() {

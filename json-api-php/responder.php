@@ -1,21 +1,18 @@
 <?php
+
 require_once('Inflector.php');
 
 class Responder {
 
-    static $encoder;
-    static $root;
-    static $LINKS = array();
-    static $TYPE;
-
     function __construct($type, $encoder = NULL) {
 
-        if (!$type){
+        if (!$type) {
             throw new Exception('Type must be set.');
         }
 
         $this->encoder = isset($encoder) ? $encoder : 'json_encode';
-        $this->TYPE = $type;
+        $this->type = $type;
+        $this->links = array();
         $this->root = $this->pluralizedType();
     }
 
@@ -33,10 +30,10 @@ class Responder {
         $properties = array();
 
         foreach($links as $link) {
-            $properties = $this->LINKS[$link];
+            $properties = $this->links[$link];
             $key = sprintf("%s.%s", $this->pluralizedType(), $link);
             $value = array(
-                "type" => $properties['responder']->pluralizedType()
+                "type" => $properties['responder']->pluralizedType();
             );
 
             if(array_key_exists("href", $properties)) {
@@ -54,7 +51,7 @@ class Responder {
 
         foreach($linked as $key => $instances) {
 
-            $responder = $this->LINKS[$key]['responder'];
+            $responder = $this->links[$key]['responder'];
 
             $rv[$key]  = $responder->buildResources($instances);
         }
@@ -138,7 +135,7 @@ class Responder {
     }
 
     public function pluralizedType() {
-        return Inflector::pluralize($this->TYPE);
+        return Inflector::pluralize($this->type);
     }
 
 }
